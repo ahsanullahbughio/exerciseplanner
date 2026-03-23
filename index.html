@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise Planner</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ── Sidebar Navigation ───────────────────────────── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">🔥</div>
+
+    <button class="nav-item active" data-page="dashboard" title="Dashboard">
+      <span>🏠</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-item" data-page="exercises" title="Exercise Library">
+      <span>📖</span>
+      <span class="nav-label">Library</span>
+    </button>
+    <button class="nav-item" data-page="routines" title="My Routines">
+      <span>📋</span>
+      <span class="nav-label">Routines</span>
+    </button>
+    <button class="nav-item" data-page="builder" title="Build Routine">
+      <span>✚</span>
+      <span class="nav-label">Build</span>
+    </button>
+
+    <div class="sidebar-spacer"></div>
+
+    <button class="nav-item" data-page="history" title="History">
+      <span>📊</span>
+      <span class="nav-label">History</span>
+    </button>
+  </nav>
+
+  <!-- ── Main Content ─────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- ════ DASHBOARD ══════════════════════════════════ -->
+    <section id="page-dashboard" class="page active">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Good workout! 💪</div>
+          <div class="page-subtitle">Ready to train?</div>
+        </div>
+        <button class="btn-primary" onclick="openBuilder()">+ New Routine</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-routines">0</div>
+          <div class="stat-label">Routines</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-sessions">0</div>
+          <div class="stat-label">Sessions this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-minutes">0</div>
+          <div class="stat-label">Total minutes</div>
+        </div>
+      </div>
+
+      <!-- Dashboard grid -->
+      <div class="dashboard-grid">
+        <div class="section-card">
+          <div class="section-title">
+            Quick Start
+            <button class="btn-icon" onclick="showPage('routines')" title="See all">→</button>
+          </div>
+          <div class="quick-actions" id="quick-routines"></div>
+        </div>
+        <div class="section-card">
+          <div class="section-title">
+            Recent Sessions
+            <button class="btn-icon" onclick="showPage('history')" title="See all">→</button>
+          </div>
+          <div id="recent-sessions"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ EXERCISE LIBRARY ════════════════════════════ -->
+    <section id="page-exercises" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Exercise Library</div>
+          <div class="page-subtitle">Browse all exercises with animations</div>
+        </div>
+      </div>
+
+      <div class="ex-controls">
+        <input type="text" id="ex-search" class="search-input" placeholder="🔍 Search exercises, muscles...">
+        <div class="filter-tabs">
+          <button class="ex-filter-tab active" data-cat="all">All</button>
+          <button class="ex-filter-tab" data-cat="kettlebell">🔔 Kettlebell</button>
+          <button class="ex-filter-tab" data-cat="dumbbell">🏋️ Dumbbell</button>
+          <button class="ex-filter-tab" data-cat="barbell">💪 Barbell</button>
+          <button class="ex-filter-tab" data-cat="bodyweight">🤸 Bodyweight</button>
+          <button class="ex-filter-tab" data-cat="warmup">🔥 Warmup</button>
+        </div>
+      </div>
+
+      <div class="exercise-grid" id="exercise-grid"></div>
+    </section>
+
+    <!-- ════ ROUTINES ════════════════════════════════════ -->
+    <section id="page-routines" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">My Routines</div>
+          <div class="page-subtitle">All your saved workout routines</div>
+        </div>
+        <button class="btn-primary" onclick="openBuilder()">+ Create Routine</button>
+      </div>
+      <div class="routines-list" id="routines-list"></div>
+    </section>
+
+    <!-- ════ BUILDER ═════════════════════════════════════ -->
+    <section id="page-builder" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Routine Builder</div>
+          <div class="page-subtitle">Design your perfect workout</div>
+        </div>
+        <button class="btn-secondary" onclick="showPage('routines')">← Back</button>
+      </div>
+
+      <div class="builder-layout">
+
+        <!-- Left: settings -->
+        <div class="builder-sidebar">
+          <div class="form-group">
+            <label>Routine Name</label>
+            <input type="text" id="builder-name" class="form-control" placeholder="e.g. Morning Kettlebell">
+          </div>
+
+          <div class="form-group">
+            <label>Type</label>
+            <select id="builder-type" class="form-control">
+              <option value="circuit">Circuit — Timed exercises, multiple rounds</option>
+              <option value="emom">EMOM — Every Minute On the Minute</option>
+              <option value="reps">Strength — Sets × Reps</option>
+            </select>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Circuit fields -->
+          <div id="field-rounds" class="form-group">
+            <label>Rounds</label>
+            <input type="number" id="builder-rounds" class="form-control" min="1" max="20" value="3">
+          </div>
+
+          <div id="field-rest-rounds" class="form-group">
+            <label>Rest between rounds (sec)</label>
+            <input type="number" id="builder-rest-rounds" class="form-control" min="0" max="300" value="60">
+          </div>
+
+          <div id="field-rest-exercises" class="form-group">
+            <label>Rest between exercises (sec)</label>
+            <input type="number" id="builder-rest-ex" class="form-control" min="0" max="120" value="15">
+          </div>
+
+          <!-- EMOM fields -->
+          <div id="field-emom" class="form-group" style="display:none">
+            <label>Duration (minutes)</label>
+            <input type="number" id="builder-emom-minutes" class="form-control" min="1" max="60" value="10">
+          </div>
+
+          <!-- Reps fields -->
+          <div id="field-rest-sets" class="form-group" style="display:none">
+            <label>Rest between sets (sec)</label>
+            <input type="number" id="builder-rest-sets" class="form-control" min="0" max="300" value="90">
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">
+            <strong style="color:var(--text)">Tip:</strong><br>
+            • <strong>Circuit</strong>: Do each exercise for a set time, rest, repeat rounds.<br>
+            • <strong>EMOM</strong>: Every minute, do the listed reps. Rest fills the minute.<br>
+            • <strong>Strength</strong>: Classic sets × reps. Tap ▶ when set is done.
+          </div>
+        </div>
+
+        <!-- Right: exercise list -->
+        <div class="builder-main">
+          <div class="builder-exercises-header">
+            <h3>Exercises <span style="color:var(--text-muted);font-weight:400;font-size:14px">(drag to reorder)</span></h3>
+            <button class="btn-primary" onclick="addExToBuilder()">+ Add Exercise</button>
+          </div>
+
+          <div id="builder-exercises"></div>
+
+          <div class="builder-actions">
+            <button class="btn-primary" onclick="saveRoutine()" style="flex:1">💾 Save Routine</button>
+            <button class="btn-secondary" onclick="showPage('routines')">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════ SESSION ═════════════════════════════════════ -->
+    <section id="page-session" class="page">
+
+      <!-- Session header -->
+      <div class="session-header">
+        <h2>
+          <span id="session-type-badge" class="routine-type-badge"></span>
+          <span id="session-routine-name">Workout</span>
+        </h2>
+        <div class="session-progress-wrap">
+          <div class="progress-bar-outer">
+            <div class="progress-bar-fill" id="session-progress-bar"></div>
+          </div>
+          <span id="session-progress-text">0 / 0</span>
+        </div>
+      </div>
+
+      <!-- Session body -->
+      <div class="session-body">
+
+        <!-- Animation panel -->
+        <div class="session-anim-panel">
+          <canvas id="session-anim-canvas" width="500" height="380"></canvas>
+
+          <!-- Timer ring -->
+          <div class="timer-ring-wrap">
+            <svg class="timer-ring-svg" viewBox="0 0 120 120">
+              <circle class="timer-ring-bg" cx="60" cy="60" r="54"/>
+              <circle class="timer-ring-progress" id="timer-ring-progress" cx="60" cy="60" r="54"/>
+            </svg>
+            <div id="session-timer">0:00</div>
+          </div>
+
+          <!-- Rest overlay -->
+          <div class="session-rest-overlay" id="session-rest-overlay">
+            <div class="rest-label">REST</div>
+            <div class="rest-timer" id="rest-timer-display">1:00</div>
+            <div id="rest-next-name">Next exercise coming up</div>
+          </div>
+        </div>
+
+        <!-- Info panel -->
+        <div class="session-info-panel">
+          <div id="session-step-label" class="step-label"></div>
+          <div id="session-ex-cat"></div>
+          <div id="session-ex-name">Exercise</div>
+          <div id="session-reps-display">10 reps</div>
+          <div id="session-ex-desc" class="ex-desc"></div>
+
+          <div class="cues-section">
+            <h4>Coaching Cues</h4>
+            <ul id="session-cues"></ul>
+          </div>
+
+          <div class="session-controls">
+            <button class="btn-session-ctrl" id="btn-session-pause">⏸</button>
+            <button class="btn-session-ctrl" id="btn-session-next">Skip →</button>
+            <button class="btn-session-ctrl" id="btn-session-stop">■ End</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Session complete overlay -->
+      <div class="session-complete-overlay" id="session-complete-overlay">
+        <div class="complete-icon">🏆</div>
+        <div class="complete-title">Workout Complete!</div>
+        <div class="complete-stats" id="complete-summary"></div>
+        <button class="btn-primary" style="font-size:16px;padding:14px 32px" onclick="sessionDone()">
+          See Results →
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ════ HISTORY ═════════════════════════════════════ -->
+    <section id="page-history" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Workout History</div>
+          <div class="page-subtitle">Your recorded sessions</div>
+        </div>
+      </div>
+      <div class="history-list" id="history-list"></div>
+    </section>
+
+  </div><!-- /main-content -->
+</div><!-- /app-container -->
+
+<!-- ════ MODALS ═══════════════════════════════════════════ -->
+
+<!-- Exercise detail modal -->
+<div class="modal-overlay" id="modal-exercise" onclick="if(event.target===this)closeExerciseModal()">
+  <div class="modal modal-exercise-content">
+    <div class="modal-header">
+      <h3 id="modal-ex-name">Exercise</h3>
+      <button class="modal-close" onclick="closeExerciseModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <canvas id="modal-ex-canvas" width="520" height="250"></canvas>
+      <div class="ex-detail-meta">
+        <span class="ex-cat" id="modal-ex-category"></span>
+      </div>
+      <div class="ex-detail-section">
+        <h4>Description</h4>
+        <p id="modal-ex-desc"></p>
+      </div>
+      <div class="ex-detail-section">
+        <h4>Muscles Worked</h4>
+        <p id="modal-ex-muscles"></p>
+      </div>
+      <div class="ex-detail-section">
+        <h4>Coaching Cues</h4>
+        <ul id="modal-ex-cues"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Exercise picker modal -->
+<div class="modal-overlay" id="modal-picker" onclick="if(event.target===this)document.getElementById('modal-picker').classList.remove('open')">
+  <div class="modal modal-picker-content">
+    <div class="modal-header">
+      <h3>Add Exercise</h3>
+      <button class="modal-close" onclick="document.getElementById('modal-picker').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="picker-controls">
+        <input type="text" id="picker-search" class="search-input" placeholder="Search exercises...">
+        <div class="picker-tabs">
+          <button class="picker-tab active" data-cat="all">All</button>
+          <button class="picker-tab" data-cat="kettlebell">🔔 KB</button>
+          <button class="picker-tab" data-cat="dumbbell">🏋️ DB</button>
+          <button class="picker-tab" data-cat="barbell">💪 Bar</button>
+          <button class="picker-tab" data-cat="bodyweight">🤸 BW</button>
+          <button class="picker-tab" data-cat="warmup">🔥 Warmup</button>
+        </div>
+      </div>
+      <div id="picker-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/db.js"></script>
+<script src="js/exercises.js"></script>
+<script src="js/animations.js"></script>
+<script src="js/session.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+  // Wire rest timer to session state updates
+  const _origUpdate = window.updateSessionDisplay;
+  window.updateSessionDisplay = function(state) {
+    _origUpdate(state);
+    const step = state.queue[state.step];
+    if (step && step.kind === 'rest') {
+      document.getElementById('rest-timer-display').textContent =
+        formatTime(state.timeLeft);
+    }
+  };
+</script>
+
+</body>
+</html>
