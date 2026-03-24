@@ -81,7 +81,7 @@ function renderExercises() {
 
   grid.innerHTML = list.map(ex => `
     <div class="exercise-card" onclick="showExerciseDetail('${ex.id}')">
-      <canvas class="ex-thumb" id="thumb-${ex.id}" width="120" height="100"></canvas>
+      <img class="ex-thumb" id="thumb-${ex.id}" alt="${ex.name}">
       <div class="ex-info">
         <div class="ex-cat" style="color:${CATEGORIES[ex.category]?.color || '#fff'}">
           ${CATEGORIES[ex.category]?.icon || ''} ${CATEGORIES[ex.category]?.label || ex.category}
@@ -97,7 +97,7 @@ function renderExercises() {
   list.forEach((ex, i) => {
     setTimeout(() => {
       const c = document.getElementById('thumb-' + ex.id);
-      if (c) ANIM.startAnimation(c, ex.animType);
+      if (c) ANIM.startAnimation(c, ex.id);
     }, i * 30);
   });
 }
@@ -116,7 +116,7 @@ function showExerciseDetail(id) {
   modal.classList.add('open');
   setTimeout(() => {
     const c = document.getElementById('modal-ex-canvas');
-    if (c) ANIM.startAnimation(c, ex.animType, ex.name);
+    if (c) ANIM.startAnimation(c, ex.id);
   }, 50);
 }
 
@@ -195,7 +195,7 @@ function renderBuilderExercises() {
     return `
       <div class="builder-exercise-row" draggable="true" ondragstart="dragStart(${i})" ondragover="dragOver(event,${i})" ondrop="dragDrop(${i})">
         <div class="drag-handle">⠿</div>
-        <canvas class="builder-thumb" id="bthumb-${i}" width="60" height="50"></canvas>
+        <img class="builder-thumb" id="bthumb-${i}" alt="${name}">
         <div class="builder-ex-name">
           <strong>${name}</strong>
           <span style="color:${CATEGORIES[ex?.category]?.color || '#888'}">${CATEGORIES[ex?.category]?.label || ''}</span>
@@ -223,7 +223,7 @@ function renderBuilderExercises() {
     if (ex) {
       setTimeout(() => {
         const c = document.getElementById('bthumb-' + i);
-        if (c) ANIM.startAnimation(c, ex.animType);
+        if (c) ANIM.startAnimation(c, ex.id);
       }, i * 40);
     }
   });
@@ -423,7 +423,7 @@ function updateSessionDisplay(state) {
 
       // Start big animation
       const canvas = document.getElementById('session-anim-canvas');
-      ANIM.startAnimation(canvas, ex.animType, ex.name);
+      ANIM.startAnimation(canvas, ex.id);
     }
   } else {
     // Rest: show next exercise preview
